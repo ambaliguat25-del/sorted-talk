@@ -9,7 +9,6 @@ templates = Jinja2Templates(directory="templates")
 
 class ChannelManager:
     def __init__(self):
-        # I-store ang mga active connections kada channel/frequency
         self.channels: dict[str, list[WebSocket]] = {}
 
     async def connect(self, websocket: WebSocket, channel: str):
@@ -43,8 +42,6 @@ async def get(request: Request):
 @app.websocket("/ws/{channel}/{username}")
 async def websocket_endpoint(websocket: WebSocket, channel: str, username: str):
     await manager.connect(websocket, channel)
-    
-    # I-broadcast sa uban sa parehong channel nga online na ang rider
     await manager.broadcast(channel, json.dumps({"type": "status", "username": username, "status": "online"}), websocket)
     
     try:
